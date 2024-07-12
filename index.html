@@ -122,25 +122,52 @@
         button:hover {
             background-color: #004066;
         }
-        input[type="file"], input[type="text"], input[type="number"] {
+        input[type="file"], input[type="text"], input[type="number"], input[type="password"] {
             display: block;
             margin-bottom: 1em;
             padding: 0.5em;
             width: calc(100% - 1em);
+        }
+        /* Estilos para el formulario de inicio de sesión */
+        #login-form {
+            display: none; /* Se ocultará por defecto */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #login-form input {
+            margin-bottom: 10px;
+            padding: 10px;
+            width: calc(100% - 22px);
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
 <body>
     <header>
         <img id="logo-img-header" src="/mnt/data/image.png" alt="AcuaTap Logo" onclick="toggleLogoSize(this)">
-        <h1>AcuaTap - Venta de Tapetes</h1>
-        <input type="file" id="logo-input-header" onchange="updateLogo('header')">
+        <h1 contenteditable="false" class="editable">AcuaTap - Venta de Tapetes</h1>
+        <input type="file" id="logo-input-header" onchange="updateLogo('header')" style="display: none;">
     </header>
 
     <div class="container">
         <section id="quienes-somos">
             <h2>¿Quiénes Somos?</h2>
-            <p contenteditable="true" class="editable">Somos una empresa dedicada a la venta de tapetes de alta calidad, ofreciendo una amplia variedad de estilos y diseños para todos los gustos.</p>
+            <p contenteditable="false" class="editable">Somos una empresa dedicada a la venta de tapetes de alta calidad, ofreciendo una amplia variedad de estilos y diseños para todos los gustos.</p>
         </section>
 
         <section id="productos">
@@ -150,7 +177,7 @@
             </div>
         </section>
         
-        <section id="add-product">
+        <section id="add-product" style="display: none;">
             <h2>Añadir Producto</h2>
             <input type="file" id="newProductImage">
             <input type="text" id="newProductName" placeholder="Nombre del producto">
@@ -163,19 +190,20 @@
         <div class="container">
             <section id="contact">
                 <h2>Contacto</h2>
-                <p contenteditable="true" class="editable">Puedes contactarnos a través del correo electrónico: contacto@acuatap.com</p>
+                <p contenteditable="false" class="editable">Puedes contactarnos a través del correo electrónico: contacto@acuatap.com</p>
             </section>
             
             <section id="address">
                 <h2>Dirección</h2>
-                <p contenteditable="true" class="editable">Estamos ubicados en Calle Falsa 123, Ciudad Ejemplo, País.</p>
+                <p contenteditable="false" class="editable">Estamos ubicados en Calle Falsa 123, Ciudad Ejemplo, País.</p>
             </section>
         </div>
         <div class="container">
             <img id="logo-img-footer" src="/mnt/data/image.png" alt="AcuaTap Logo" onclick="toggleLogoSize(this)">
-            <input type="file" id="logo-input-footer" onchange="updateLogo('footer')">
-            <p contenteditable="true" class="editable">&copy; 2024 AcuaTap. Todos los derechos reservados.</p>
+            <input type="file" id="logo-input-footer" onchange="updateLogo('footer')" style="display: none;">
+            <p contenteditable="false" class="editable">&copy; 2024 AcuaTap. Todos los derechos reservados.</p>
         </div>
+        <button onclick="showLoginForm()">Iniciar Sesión</button>
     </footer>
 
     <div class="cart" id="cart">
@@ -186,16 +214,24 @@
         <button onclick="checkout()">Pagar</button>
     </div>
 
+    <div id="login-form">
+        <h2>Iniciar Sesión</h2>
+        <input type="text" id="username" placeholder="Usuario">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="login()">Entrar</button>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="hideLoginForm()"></div>
+
     <script>
         const products = [
             { id: 1, name: 'Tapete Clásico', price: 20.00, img: 'tapete1.jpg', description: 'Descripción del tapete clásico.' },
             { id: 2, name: 'Tapete Moderno', price: 30.00, img: 'tapete2.jpg', description: 'Descripción del tapete moderno.' },
             { id: 3, name: 'Tapete Elegante', price: 40.00, img: 'tapete3.jpg', description: 'Descripción del tapete elegante.' },
-            { id: 4, name: 'Tapete Vintage', price: 25.00, img: 'tapete4.jpg', description: 'Descripción del tapete vintage.' },
-            { id: 5, name: 'Tapete Geométrico', price: 35.00, img: 'tapete5.jpg', description: 'Descripción del tapete geométrico.' }
+            { id: 4, name: 'Tapete Geométrico', price: 50.00, img: 'tapete4.jpg', description: 'Descripción del tapete geométrico.' }
         ];
-
-        const cart = [];
+        let cart = [];
+        let isLoggedIn = false;
 
         function loadProducts() {
             const productList = document.getElementById('product-list');
@@ -206,10 +242,10 @@
                 productDiv.innerHTML = `
                     <img src="${product.img}" alt="${product.name}">
                     <p>${product.name}</p>
-                    <div class="product-description" contenteditable="true">${product.description}</div>
                     <p>$${product.price.toFixed(2)}</p>
+                    <div contenteditable="${isLoggedIn}" class="product-description">${product.description}</div>
                     <button onclick="addToCart(${product.id})">Añadir al Carrito</button>
-                    <button class="delete-product" onclick="deleteProduct(${product.id})">Eliminar</button>
+                    ${isLoggedIn ? `<button class="delete-product" onclick="deleteProduct(${product.id})">X</button>` : ''}
                 `;
                 productList.appendChild(productDiv);
             });
@@ -302,6 +338,40 @@
             if (index !== -1) {
                 products.splice(index, 1);
                 loadProducts();
+            }
+        }
+
+        function showLoginForm() {
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function hideLoginForm() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (username === 'tocinoramirez' && password === '12345') {
+                isLoggedIn = true;
+                document.getElementById('login-form').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
+                loadProducts();
+                document.querySelectorAll('.editable').forEach(element => {
+                    element.setAttribute('contenteditable', 'true');
+                });
+                document.getElementById('add-product').style.display = 'block';
+                document.querySelectorAll('header .editable, footer .editable').forEach(element => {
+                    element.setAttribute('contenteditable', 'true');
+                });
+                document.querySelectorAll('header input[type="file"], footer input[type="file"]').forEach(input => {
+                    input.style.display = 'block';
+                });
+            } else {
+                alert('Usuario o contraseña incorrectos');
             }
         }
 
