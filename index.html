@@ -7,19 +7,19 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0e6db; /* Color de fondo similar al del logo */
+            background-color: #f0e6db;
             color: #333;
             margin: 0;
             padding: 0;
         }
         header, footer {
-            background-color: #00587a; /* Color azul oscuro del logo */
+            background-color: #00587a;
             color: white;
             text-align: center;
             padding: 1em 0;
         }
         header img, footer img {
-            max-width: 100px; /* Tamaño reducido del logo */
+            max-width: 100px;
             cursor: pointer;
             transition: transform 0.3s;
         }
@@ -45,36 +45,11 @@
             border-radius: 5px;
             background-color: #fff;
             text-align: center;
-            position: relative;
         }
         .product img {
             max-width: 100%;
             height: auto;
             margin-bottom: 10px;
-        }
-        .product-description {
-            border: 1px solid #ccc;
-            padding: 5px;
-            border-radius: 3px;
-            margin-bottom: 10px;
-            min-height: 50px;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-            hyphens: auto;
-        }
-        .delete-product {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background-color: #ff4d4d;
-            color: white;
-            border: none;
-            padding: 5px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        .delete-product:hover {
-            background-color: #e60000;
         }
         .cart {
             position: fixed;
@@ -84,7 +59,7 @@
             color: white;
             padding: 0.5em;
             border-radius: 5px;
-            width: 200px; /* Carrito de compras más pequeño */
+            width: 200px;
             max-height: 300px;
             overflow-y: auto;
             display: none;
@@ -102,7 +77,7 @@
             border-bottom: 1px solid #ccc;
         }
         .cart img {
-            max-width: 40px; /* Tamaño de la imagen del producto en el carrito */
+            max-width: 40px;
             margin-right: 10px;
         }
         .editable {
@@ -118,6 +93,7 @@
             padding: 0.5em 1em;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #004066;
@@ -128,40 +104,44 @@
             padding: 0.5em;
             width: calc(100% - 1em);
         }
-        /* Estilos para el formulario de inicio de sesión */
-        #login-form {
-            display: none; /* Se ocultará por defecto */
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        .login-dropdown {
+            position: relative;
+            display: inline-block;
         }
-        #login-form input {
-            margin-bottom: 10px;
-            padding: 10px;
-            width: calc(100% - 22px);
-        }
-        .overlay {
+        .login-dropdown-content {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 5px;
+            text-align: left;
+            right: 0;
+        }
+        .login-dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        .login-dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .login-dropdown:hover .login-dropdown-content {
+            display: block;
+        }
+        .login-dropdown:hover .login-btn {
+            background-color: #004066;
         }
     </style>
 </head>
 <body>
     <header>
-        <img id="logo-img-header" src="/mnt/data/image.png" alt="AcuaTap Logo" onclick="toggleLogoSize(this)">
-        <h1 contenteditable="false" class="editable">AcuaTap - Venta de Tapetes</h1>
-        <input type="file" id="logo-input-header" onchange="updateLogo('header')" style="display: none;">
+        <img id="logo-img-header" src="/mnt/data/image.png" alt="AcuaTap Logo">
+        <input type="file" id="logo-input-header" onchange="updateLogo('header')" style="display:none;">
+        <button id="edit-logo-header" onclick="document.getElementById('logo-input-header').click()" style="display:none;">Editar Logo</button>
+        <h1>AcuaTap - Venta de Tapetes</h1>
     </header>
 
     <div class="container">
@@ -177,7 +157,7 @@
             </div>
         </section>
         
-        <section id="add-product" style="display: none;">
+        <section id="add-product">
             <h2>Añadir Producto</h2>
             <input type="file" id="newProductImage">
             <input type="text" id="newProductName" placeholder="Nombre del producto">
@@ -187,23 +167,26 @@
     </div>
 
     <footer>
-        <div class="container">
-            <section id="contact">
-                <h2>Contacto</h2>
-                <p contenteditable="false" class="editable">Puedes contactarnos a través del correo electrónico: contacto@acuatap.com</p>
-            </section>
-            
-            <section id="address">
-                <h2>Dirección</h2>
-                <p contenteditable="false" class="editable">Estamos ubicados en Calle Falsa 123, Ciudad Ejemplo, País.</p>
-            </section>
+        <img id="logo-img-footer" src="/mnt/data/image.png" alt="AcuaTap Logo">
+        <input type="file" id="logo-input-footer" onchange="updateLogo('footer')" style="display:none;">
+        <button id="edit-logo-footer" onclick="document.getElementById('logo-input-footer').click()" style="display:none;">Editar Logo</button>
+        <div id="contact-info">
+            <h2>Contacto</h2>
+            <p contenteditable="false" id="contact-info-editable" class="editable">Correo: contacto@acuatap.com</p>
         </div>
-        <div class="container">
-            <img id="logo-img-footer" src="/mnt/data/image.png" alt="AcuaTap Logo" onclick="toggleLogoSize(this)">
-            <input type="file" id="logo-input-footer" onchange="updateLogo('footer')" style="display: none;">
-            <p contenteditable="false" class="editable">&copy; 2024 AcuaTap. Todos los derechos reservados.</p>
+        <div id="address-info">
+            <h2>Dirección</h2>
+            <p contenteditable="false" id="address-info-editable" class="editable">Calle Falsa 123, Ciudad Ejemplo, País.</p>
         </div>
-        <button onclick="showLoginForm()">Iniciar Sesión</button>
+        <p contenteditable="false" class="editable">&copy; 2024 AcuaTap. Todos los derechos reservados.</p>
+        <div class="login-dropdown">
+            <button class="login-btn" onclick="toggleLoginMenu()">Iniciar Sesión</button>
+            <div class="login-dropdown-content" id="login-dropdown">
+                <input type="text" id="username" placeholder="Usuario">
+                <input type="password" id="password" placeholder="Contraseña">
+                <button onclick="login()">Iniciar Sesión</button>
+            </div>
+        </div>
     </footer>
 
     <div class="cart" id="cart">
@@ -212,26 +195,21 @@
             <!-- Items del carrito se agregarán aquí dinámicamente -->
         </ul>
         <button onclick="checkout()">Pagar</button>
+        <button onclick="toggleCartSize()">Minimizar/Expandir</button>
+        <button onclick="logout()">Cerrar Sesión</button>
     </div>
-
-    <div id="login-form">
-        <h2>Iniciar Sesión</h2>
-        <input type="text" id="username" placeholder="Usuario">
-        <input type="password" id="password" placeholder="Contraseña">
-        <button onclick="login()">Entrar</button>
-    </div>
-
-    <div class="overlay" id="overlay" onclick="hideLoginForm()"></div>
 
     <script>
-        const products = [
-            { id: 1, name: 'Tapete Clásico', price: 20.00, img: 'tapete1.jpg', description: 'Descripción del tapete clásico.' },
-            { id: 2, name: 'Tapete Moderno', price: 30.00, img: 'tapete2.jpg', description: 'Descripción del tapete moderno.' },
-            { id: 3, name: 'Tapete Elegante', price: 40.00, img: 'tapete3.jpg', description: 'Descripción del tapete elegante.' },
-            { id: 4, name: 'Tapete Geométrico', price: 50.00, img: 'tapete4.jpg', description: 'Descripción del tapete geométrico.' }
+        let products = JSON.parse(localStorage.getItem('products')) || [
+            { id: 1, name: 'Tapete Clásico', price: 20.00, img: 'tapete1.jpg', description: 'Tapete clásico de alta calidad.' },
+            { id: 2, name: 'Tapete Moderno', price: 30.00, img: 'tapete2.jpg', description: 'Tapete moderno con diseño contemporáneo.' },
+            { id: 3, name: 'Tapete Elegante', price: 40.00, img: 'tapete3.jpg', description: 'Tapete elegante para decoración sofisticada.' },
+            { id: 4, name: 'Tapete Vintage', price: 25.00, img: 'tapete4.jpg', description: 'Tapete vintage de estilo retro.' },
+            { id: 5, name: 'Tapete Geométrico', price: 35.00, img: 'tapete5.jpg', description: 'Tapete con diseño geométrico moderno.' }
         ];
-        let cart = [];
-        let isLoggedIn = false;
+
+        const cart = [];
+        let loggedIn = false;
 
         function loadProducts() {
             const productList = document.getElementById('product-list');
@@ -241,11 +219,10 @@
                 productDiv.classList.add('product');
                 productDiv.innerHTML = `
                     <img src="${product.img}" alt="${product.name}">
-                    <p>${product.name}</p>
-                    <p>$${product.price.toFixed(2)}</p>
-                    <div contenteditable="${isLoggedIn}" class="product-description">${product.description}</div>
+                    <h3 contenteditable="false" class="editable">${product.name}</h3>
+                    <p contenteditable="false" class="editable">$${product.price.toFixed(2)}</p>
+                    <p contenteditable="false" class="editable">${product.description}</p>
                     <button onclick="addToCart(${product.id})">Añadir al Carrito</button>
-                    ${isLoggedIn ? `<button class="delete-product" onclick="deleteProduct(${product.id})">X</button>` : ''}
                 `;
                 productList.appendChild(productDiv);
             });
@@ -264,10 +241,11 @@
                     name: nameInput.value,
                     price: parseFloat(priceInput.value),
                     img: e.target.result,
-                    description: 'Descripción del nuevo producto.' // Descripción inicial para el nuevo producto
+                    description: ''
                 };
                 products.push(newProduct);
                 loadProducts();
+                saveProductsToLocalStorage();
                 fileInput.value = '';
                 nameInput.value = '';
                 priceInput.value = '';
@@ -290,6 +268,7 @@
                 li.innerHTML = `
                     <img src="${item.img}" alt="${item.name}">
                     <p>${item.name} - $${item.price.toFixed(2)}</p>
+                    <p>${item.description}</p>
                     <button onclick="removeProduct(${item.id})">Eliminar</button>
                 `;
                 cartItems.appendChild(li);
@@ -305,8 +284,7 @@
         }
 
         function checkout() {
-            alert('Redirigiendo a la página de pago...');
-            // Aquí se redirigiría a la página de pago
+            window.open('https://example.com/pago', '_blank'); // Reemplaza 'https://example.com/pago' con la URL real de tu página de pago
         }
 
         function updateLogo(section) {
@@ -333,22 +311,18 @@
             cart.style.display = 'block';
         }
 
-        function deleteProduct(productId) {
-            const index = products.findIndex(p => p.id === productId);
-            if (index !== -1) {
-                products.splice(index, 1);
-                loadProducts();
+        function toggleCartSize() {
+            const cart = document.getElementById('cart');
+            if (cart.style.width === '200px') {
+                cart.style.width = '400px';
+            } else {
+                cart.style.width = '200px';
             }
         }
 
-        function showLoginForm() {
-            document.getElementById('login-form').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
-        }
-
-        function hideLoginForm() {
-            document.getElementById('login-form').style.display = 'none';
-            document.getElementById('overlay').style.display = 'none';
+        function toggleLoginMenu() {
+            const loginDropdown = document.getElementById('login-dropdown');
+            loginDropdown.style.display = loginDropdown.style.display === 'block' ? 'none' : 'block';
         }
 
         function login() {
@@ -356,23 +330,40 @@
             const password = document.getElementById('password').value;
 
             if (username === 'tocinoramirez' && password === '12345') {
-                isLoggedIn = true;
-                document.getElementById('login-form').style.display = 'none';
-                document.getElementById('overlay').style.display = 'none';
-                loadProducts();
-                document.querySelectorAll('.editable').forEach(element => {
-                    element.setAttribute('contenteditable', 'true');
-                });
-                document.getElementById('add-product').style.display = 'block';
-                document.querySelectorAll('header .editable, footer .editable').forEach(element => {
-                    element.setAttribute('contenteditable', 'true');
-                });
-                document.querySelectorAll('header input[type="file"], footer input[type="file"]').forEach(input => {
-                    input.style.display = 'block';
-                });
+                loggedIn = true;
+                enableEdit();
+                toggleLoginMenu(); // Oculta el menú de inicio de sesión después de iniciar sesión
             } else {
-                alert('Usuario o contraseña incorrectos');
+                alert('Usuario o contraseña incorrectos.');
             }
+        }
+
+        function enableEdit() {
+            const editableElements = document.getElementsByClassName('editable');
+            for (let i = 0; i < editableElements.length; i++) {
+                editableElements[i].setAttribute('contenteditable', 'true');
+            }
+            document.getElementById('edit-logo-header').style.display = 'inline-block';
+            document.getElementById('edit-logo-footer').style.display = 'inline-block';
+            document.getElementById('username').disabled = true;
+            document.getElementById('password').disabled = true;
+        }
+
+        function logout() {
+            loggedIn = false;
+            const editableElements = document.getElementsByClassName('editable');
+            for (let i = 0; i < editableElements.length; i++) {
+                editableElements[i].setAttribute('contenteditable', 'false');
+            }
+            document.getElementById('edit-logo-header').style.display = 'none';
+            document.getElementById('edit-logo-footer').style.display = 'none';
+            document.getElementById('username').disabled = false;
+            document.getElementById('password').disabled = false;
+            saveProductsToLocalStorage();
+        }
+
+        function saveProductsToLocalStorage() {
+            localStorage.setItem('products', JSON.stringify(products));
         }
 
         document.addEventListener('DOMContentLoaded', loadProducts);
